@@ -98,7 +98,6 @@ def get_users_post(instagram_username):
         exit()
     print "GET request url :" + (BASE_URL + "users/%s/media/recent/?access_token=%s") % (user_id, ACCESS_TOKEN)
     user_media = requests.get((BASE_URL + "users/%s/media/recent/?access_token=%s") % (user_id, ACCESS_TOKEN)).json()
-
     if user_media["meta"]["code"] == 200:
         if len(user_media["data"]):
             link = user_media["data"][0]["images"]["standard_resolution"]["url"]
@@ -127,6 +126,8 @@ def get_the_comments(instagram_username):
     comments = requests.get((BASE_URL + "media/%s/comments?access_token=%s") % (post_id, ACCESS_TOKEN)).json()
     print comments["data"]
 
+
+
 def like_a_post(instagram_username):
     media_id = get_post_id(instagram_username)
     request = (BASE_URL + "media/%s/likes") % (media_id)
@@ -137,6 +138,8 @@ def like_a_post(instagram_username):
         print "Like was successful!"
     else:
         print "Your like was unsuccessful. Try again!"
+
+
 
 def post_a_comment(instagram_username):
     media_id = get_post_id(instagram_username)
@@ -150,13 +153,30 @@ def post_a_comment(instagram_username):
         print"comment was unsuccessful"
 
 
+
+def search_by_tag():
+    query= raw_input("Add a query:\n")
+    print "Get request Url:" + ((BASE_URL + "tags/%s/media/recent?access_token=%s")) % (query, ACCESS_TOKEN)
+    hashtag = requests.get(((BASE_URL + "tags/%s/media/recent?access_token=%s")) % (query, ACCESS_TOKEN)).json()
+    if hashtag["meta"]["code"] == 200:
+        if len(hashtag["data"]):
+            for i in hashtag:
+                print hashtag["data"]["%d"]["id"] % (i)
+            return hashtag["data"]
+        else:
+            print "there is no such hashtag"
+    else:
+        print "Recieved status code is not 200"
+
+
+
 def bot_main():
     while True:
         print '\n'"Hey! Welcome to instaBot!\n\nHere are your menu options:\n" \
               "a.Get your own details\n\nb.Get details of a user by username\n\n" \
               "c.Get your own recent post\n\nd.Get the recent post of a user by username\n\n" \
               "e.Show the images liked by user\n\nf.Get the comments using media ID\n\ng.Like a post\n\n" \
-              "h.Comment on a post\n"
+              "h.Comment on a post\ni.search by hashtag\n"
         choose_option = raw_input("Choose any option from tha given menu:")
         if choose_option == "a":
             apni_jaankari()
@@ -179,6 +199,8 @@ def bot_main():
         elif choose_option == "h":
             instagram_username = raw_input("Enter the username of user")
             post_a_comment(instagram_username)
+        elif choose_option == "i":
+            search_by_tag()
 bot_main()
 
 

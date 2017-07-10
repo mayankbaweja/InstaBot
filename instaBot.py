@@ -2,6 +2,7 @@ import requests, urllib
 
 ACCESS_TOKEN = "1595866987.0d51ae1.ecb2290bd5f74b1584894260fc8cfd64"
 BASE_URL= "https://api.instagram.com/v1/"
+a=[]
 
 
 # Function to show our own information
@@ -124,7 +125,8 @@ def get_the_comments(instagram_username):
     post_id = get_post_id(instagram_username)
     print "Get request URL:" + ((BASE_URL + "media/%s/comments?access_token=%s") % (post_id, ACCESS_TOKEN))
     comments = requests.get((BASE_URL + "media/%s/comments?access_token=%s") % (post_id, ACCESS_TOKEN)).json()
-    print comments["data"]
+    for i,d in enumerate(comments["data"]):
+        print d["from"]["username"] + " : " + d["text"]
 
 
 # Function to like any post of any user
@@ -161,7 +163,10 @@ def search_by_tag():
     hashtag = requests.get(((BASE_URL + "tags/%s/media/recent?access_token=%s")) % (tag, ACCESS_TOKEN)).json()
     if hashtag["meta"]["code"] == 200:
         if len(hashtag["data"]):
-            return hashtag["data"][0]["id"]
+            for i,d in enumerate(hashtag["data"]):
+                print d["id"]
+                a.append(d["id"])
+            return a
         else:
             print "there is no such hashtag"
     else:
@@ -169,28 +174,27 @@ def search_by_tag():
 
 
 # Function to post any comment on any post of any user
-def post_a_comment_by_hashtag():
+def post_a_comment_and_like_by_hashtag():
     media_id = search_by_tag()
-
-    request = (BASE_URL + "media/%s/likes") % (media_id)
     data = {"access_token": ACCESS_TOKEN}
-    print "POST request URL : %s" % (request)
-    post_a_like = requests.post(request, data).json()
-    if post_a_like['meta']['code'] == 200:
-        print "Liked!"
-    else:
-        print "Your like was unsuccessful. Try again!"
-
-
-    request_for_comment= (BASE_URL + "media/%s/comments") % (media_id)
+    for i in media_id:
+        request = (BASE_URL + "media/%s/likes") % (i)
+        print "POST request URL : %s" % (request)
+        post_a_like = requests.post(request, data).json()
+        if post_a_like['meta']['code'] == 200:
+            print "Liked!"
+        else:
+            print "Your like was unsuccessful. Try again!"
     comment = raw_input("comment?:")
-    data= {"access_token":ACCESS_TOKEN, "text":comment}
-    print "POST request URL: %s" % (request_for_comment)
-    comment_on_post=requests.post(request_for_comment,data).json()
-    if comment_on_post["meta"]["code"] == 200:
-        print "Comment done"
-    else:
-        print"Comment was unsuccessful"
+    data = {"access_token": ACCESS_TOKEN, "text": comment}
+    for i in media_id:
+        request_for_comment= (BASE_URL + "media/%s/comments") % (i)
+        print "POST request URL: %s" % (request_for_comment)
+        comment_on_post=requests.post(request_for_comment,data).json()
+        if comment_on_post["meta"]["code"] == 200:
+            print "Comment done"
+        else:
+            print"Comment was unsuccessful"
 
 
 # Function to show the main menu of the instaBot
@@ -226,19 +230,6 @@ def bot_main():
         elif choose_option == "i":
             search_by_tag()
         elif choose_option == "j":
-            post_a_comment_by_hashtag()
+            post_a_comment_and_like_by_hashtag()
 
 bot_main()
-
-
-
-
-
-
-
-
-
-
-
-
-

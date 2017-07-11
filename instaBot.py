@@ -17,8 +17,10 @@ def apni_jaankari():
             print "Posts: %s" % (upyogkarta_jankaari["data"]["counts"]["media"])
         else:
             print "USER DOES NOT EXIST"
+    elif upyogkarta_jankaari["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "RECIEVED STATUS CODE IS NOT 200"
+        print "Error"
 
 
 # Function to search any user's id
@@ -30,8 +32,10 @@ def get_user_id(instagram_username):
             return upyogkarta_jankaari["data"][0]["id"]
         else:
             return None
+    elif upyogkarta_jankaari["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "RECIEVED STATUS CODE IS NOT 200"
+        print "Error"
         exit()
 
 
@@ -51,8 +55,10 @@ def get_user_information(instagram_username):
             print "Posts: %s" % (upyogkarta_jankaari["data"]["counts"]["media"])
         else:
             print "There is no data for this user"
+    elif upyogkarta_jankaari["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "Recieved status code is not 200"
+        print "Error"
 
 
 # Function to show our own recent posts
@@ -68,8 +74,10 @@ def khudki_post():
             print "Aapki tasveer download ho chuki hai"
         else:
           print "Media does not exist"
+    elif apni_post["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "Recieved status code is not 200"
+        print "Error"
 
 
 # Function to get any post's id
@@ -86,8 +94,10 @@ def get_post_id(instagram_username):
         else:
             print "Iss user ne koi post nahi ki huyi"
             exit()
+    elif user_media["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "Recieved status code is other than 200"
+        print "Error"
         exit()
 
 
@@ -108,10 +118,10 @@ def get_users_post(instagram_username):
             return user_media["data"][0]["id"]
         else:
           print "There is no recent post!"
+    elif user_media["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "Status code other than 200 received!"
-    return user_media
-
+        print "Error"
 
 # Function to show the recent posts liked by the owner of Access token
 def liked_by_user():
@@ -138,6 +148,8 @@ def post_a_like(instagram_username):
     post_a_like = requests.post(request, data).json()
     if post_a_like['meta']['code'] == 200:
         print "Like was successful!"
+    elif post_a_like["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
         print "Your like was unsuccessful. Try again!"
 
@@ -152,6 +164,8 @@ def post_a_comment(instagram_username):
     comment_on_post = requests.post(request, data).json()
     if comment_on_post["meta"]["code"] == 200:
         print "comment done"
+    elif comment_on_post["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
         print"comment was unsuccessful"
 
@@ -169,8 +183,10 @@ def search_by_tag():
             return a
         else:
             print "there is no such hashtag"
+    elif hashtag["meta"]["code"] == 503:
+        print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
     else:
-        print "Recieved status code is not 200"
+        print "Error"
 
 
 # Function to post any comment on any post of any user
@@ -183,8 +199,11 @@ def post_a_comment_and_like_by_hashtag():
         post_a_like = requests.post(request, data).json()
         if post_a_like['meta']['code'] == 200:
             print "Liked!"
+        elif post_a_like["meta"]["code"] == 503:
+            print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
         else:
             print "Your like was unsuccessful. Try again!"
+
     comment = raw_input("comment?:")
     data = {"access_token": ACCESS_TOKEN, "text": comment}
     for i in media_id:
@@ -193,14 +212,16 @@ def post_a_comment_and_like_by_hashtag():
         comment_on_post=requests.post(request_for_comment,data).json()
         if comment_on_post["meta"]["code"] == 200:
             print "Comment done"
+        elif comment_on_post["meta"]["code"] == 503:
+            print "The server is currently unable to handle the request due to a temporary overloading or maintenance of the server."
         else:
-            print"Comment was unsuccessful"
+            print "Your like was unsuccessful. Try again!"
 
 
 # Function to show the main menu of the instaBot
 def bot_main():
     while True:
-        print '\n'"Hey! Welcome to instaBot!\n\nHere are your menu options:\n" \
+        print "\nHey! Welcome to instaBot!\n\nHere are your menu options:\n" \
               "a.Get your own details\nb.Get details of a user by username\n" \
               "c.Get your own recent post\nd.Get the recent post of a user by username\n" \
               "e.Show the images liked by user\nf.Get the comments using media ID\ng.Like a post\n" \
